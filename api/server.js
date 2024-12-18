@@ -34,7 +34,7 @@ const generateAccessToken = (user) => {
   return jwt.sign(
     { id: user.id, isAdmin: user.isAdmin },
     process.env.ACCESS_TOKEN_SECRET,
-    { expiresIn: "20s" }
+    { expiresIn: "15m" }
   );
 };
 const generateRefreshToken = (user) => {
@@ -171,6 +171,17 @@ app.delete("/api/users/:userId", verify, (req, res) => {
     });
   }
 });
+
+app.post("/api/logout", verify, (req, res) => {
+  const refreshToken = req.body.refreshToken;
+
+  refreshTokens = refreshTokens.filter(token => token !== refreshToken)
+
+  res.status(200).json({
+    success: true,
+    message: "You logged out successfully!"
+  })
+})
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
